@@ -2,9 +2,11 @@
 #include "Renderer.h"
 
 #include <d3d12.h>
+#include <d3d12sdklayers.h>
 #include <dxgi1_6.h>
 #include <combaseapi.h>
 #include <wrl.h>
+#include <winerror.h>
 #include <vector>
 
 namespace TheLastOfSH {
@@ -29,6 +31,16 @@ namespace TheLastOfSH {
 		}
 
 		MyRenderer(HWND hwnd, UINT w, UINT h) {
+
+#if defined(_DEBUG)
+			
+			Microsoft::WRL::ComPtr<ID3D12Debug> debugController;
+			if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController))))
+			{
+				debugController->EnableDebugLayer();
+			}
+			
+#endif
 			D3D12CreateDevice(nullptr, (D3D_FEATURE_LEVEL)0xc200, IID_PPV_ARGS(&pDevice));
 
 			D3D12_COMMAND_QUEUE_DESC queueDesc{};
@@ -64,6 +76,11 @@ namespace TheLastOfSH {
 			temp_sc->QueryInterface(&pSwapchain);
 			temp_factory->MakeWindowAssociation(hwnd, DXGI_MWA_NO_WINDOW_CHANGES | DXGI_MWA_NO_ALT_ENTER);
 
+			D3D12_DESCRIPTOR_HEAP_DESC heapDesc{};
+			heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+			heapDesc.NumDescriptors = 1000000;
+			heapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+			pDevice->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(&pTexturePool));
 		}
 		~MyRenderer() {
 			const uint64_t fence = mFenceValue;
@@ -73,6 +90,7 @@ namespace TheLastOfSH {
 				pDxFence->SetEventOnCompletion(fence, pDxWaitIdleFenceEvent);
 				WaitForSingleObject(pDxWaitIdleFenceEvent, INFINITE);
 			}
+			pTexturePool->Release();
 			pDxFence->Release();
 			pMainQueue->Release();
 			CloseHandle(pDxWaitIdleFenceEvent);
