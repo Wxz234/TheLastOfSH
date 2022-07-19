@@ -4,6 +4,11 @@
 namespace TheLastOfSH {
 
 	struct GLTF_Model : public Model {
+
+		GLTF_Model() {
+
+		}
+
 		uint32_t GetMaterialSize() const {
 			return 0;
 		}
@@ -11,6 +16,8 @@ namespace TheLastOfSH {
 		Material* GetMaterial(uint32_t i) const {
 			return nullptr;
 		}
+
+		nlohmann::json gltf;
 	};
 
 	Model* CreateModelFromFile(const char* path) {
