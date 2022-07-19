@@ -64,5 +64,8 @@
     <FxCompile Include="Shaders\VertexShader.hlsl">
       <Filter>资源文件\Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="PixelShader.hlsl">
+      <Filter>资源文件\Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
