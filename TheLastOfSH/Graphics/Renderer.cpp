@@ -1,7 +1,6 @@
 #ifdef _WIN64
 #include "Renderer.h"
 
-#include <d3d12.h>
 #include <d3d12sdklayers.h>
 #include <dxgi1_6.h>
 #include <combaseapi.h>
@@ -97,6 +96,10 @@ namespace TheLastOfSH {
 
 			pSwapchain->Release();
 			pDevice->Release();
+		}
+
+		ID3D12Device8* GetDevice() const {
+			return pDevice;
 		}
 
 		ID3D12DescriptorHeap* GetTexturePool() const {

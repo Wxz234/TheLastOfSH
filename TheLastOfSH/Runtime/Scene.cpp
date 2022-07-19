@@ -3,7 +3,11 @@
 
 namespace TheLastOfSH {
 	struct MyScene : public Scene {
-		MyScene(Renderer* pRenderer):pRenderer(pRenderer) {}
+		MyScene(Renderer* pRenderer):pRenderer(pRenderer) {
+		
+		
+		}
+
 		void Draw() {
 			pRenderer->Present();
 		}

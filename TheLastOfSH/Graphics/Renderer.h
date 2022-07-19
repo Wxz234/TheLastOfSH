@@ -7,6 +7,7 @@ namespace TheLastOfSH {
 
 	struct Renderer {
 		virtual void Present() = 0;
+		virtual ID3D12Device8* GetDevice() const = 0;
 		virtual ID3D12DescriptorHeap* GetTexturePool() const = 0;
 	};
 
