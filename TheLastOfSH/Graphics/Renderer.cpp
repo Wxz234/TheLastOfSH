@@ -30,16 +30,14 @@ namespace TheLastOfSH {
 		}
 
 		MyRenderer(HWND hwnd, UINT w, UINT h) {
-
 #if defined(_DEBUG)
-			
 			Microsoft::WRL::ComPtr<ID3D12Debug> debugController;
 			if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController))))
 			{
 				debugController->EnableDebugLayer();
 			}
-			
 #endif
+			constexpr unsigned bufferCount = 3;
 			D3D12CreateDevice(nullptr, (D3D_FEATURE_LEVEL)0xc200, IID_PPV_ARGS(&pDevice));
 
 			D3D12_COMMAND_QUEUE_DESC queueDesc{};
@@ -50,7 +48,7 @@ namespace TheLastOfSH {
 			mFenceValue = 1;
 
 			DXGI_SWAP_CHAIN_DESC1 scDesc{};
-			scDesc.BufferCount = 3;
+			scDesc.BufferCount = bufferCount;
 			scDesc.Width = w;
 			scDesc.Height = h;
 			scDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -80,6 +78,14 @@ namespace TheLastOfSH {
 			heapDesc.NumDescriptors = 1000000;
 			heapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 			pDevice->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(&pTexturePool));
+
+			D3D12_COMMAND_LIST_TYPE listDesc = D3D12_COMMAND_LIST_TYPE_DIRECT;
+			for (unsigned i = 0;i < bufferCount; ++i) {
+				ID3D12CommandAllocator* pAlloc;
+				pDevice->CreateCommandAllocator(listDesc, IID_PPV_ARGS(&pAlloc));
+				m_Allocators.push_back(pAlloc);
+			}
+			pDevice->CreateCommandList1(0, listDesc, D3D12_COMMAND_LIST_FLAG_NONE, IID_PPV_ARGS(&m_list));
 		}
 		~MyRenderer() {
 			const uint64_t fence = mFenceValue;
@@ -89,6 +95,10 @@ namespace TheLastOfSH {
 				pDxFence->SetEventOnCompletion(fence, pDxWaitIdleFenceEvent);
 				WaitForSingleObject(pDxWaitIdleFenceEvent, INFINITE);
 			}
+			for (auto &alloc: m_Allocators) {
+				alloc->Release();
+			}
+			m_list->Release();
 			pTexturePool->Release();
 			pDxFence->Release();
 			pMainQueue->Release();
@@ -106,6 +116,10 @@ namespace TheLastOfSH {
 			return pTexturePool;
 		}
 
+		ID3D12GraphicsCommandList* GetActiveCmdList() const {
+			return m_list;
+		}
+
 		ID3D12Device8* pDevice = nullptr;
 		IDXGISwapChain4* pSwapchain = nullptr;
 		ID3D12CommandQueue* pMainQueue = nullptr;
@@ -114,6 +128,9 @@ namespace TheLastOfSH {
 		uint64_t mFenceValue = 0;
 
 		ID3D12DescriptorHeap* pTexturePool = nullptr;
+
+		ID3D12GraphicsCommandList* m_list = nullptr;
+		std::vector<ID3D12CommandAllocator*> m_Allocators;
 	};
 
 	Renderer* CreateRenderer(HWND hwnd, UINT w, UINT h) {
