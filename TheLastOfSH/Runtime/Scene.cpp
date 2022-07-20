@@ -1,6 +1,7 @@
 #ifdef _WIN64
 #include "Scene.h"
 
+#include <d3d12.h>
 #include <wrl.h>
 #include <cstddef>
 #include <cstdint>
@@ -9,7 +10,6 @@
 #include <stdexcept>
 #include <system_error>
 #include <vector>
-
 
 namespace 
 {
@@ -97,7 +97,7 @@ namespace
 
 namespace TheLastOfSH {
 	struct MyScene : public Scene {
-		MyScene(Renderer* r):pRenderer(r) {
+		MyScene(Renderer* r, uint32_t w, uint32_t h) : pRenderer(r) {
 			auto device = pRenderer->GetDevice();
 			D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc{ 0, nullptr, 0, nullptr, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT };
 			Microsoft::WRL::ComPtr<ID3DBlob> signature;
@@ -122,7 +122,8 @@ namespace TheLastOfSH {
             psoDesc.SampleDesc.Count = 1;
 
 			device->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&m_pipelineState));
-
+			m_w = w;
+			m_h = h;
 		}
 		~MyScene() {
 			m_rootSignature->Release();
@@ -131,6 +132,21 @@ namespace TheLastOfSH {
 
 		void Draw() {
 			pRenderer->BeginFrame();
+			auto m_commandList = pRenderer->GetActiveCmdList();
+			m_commandList->SetPipelineState(m_pipelineState);
+			m_commandList->SetGraphicsRootSignature(m_rootSignature);
+			D3D12_VIEWPORT m_viewport{ 0.f, 0.f, (float)m_w, (float)m_h, 0.f, 1.f };
+			m_commandList->RSSetViewports(1, &m_viewport);
+			D3D12_RECT m_scissorRect{ 0, 0, m_w, m_h };
+			m_commandList->RSSetScissorRects(1, &m_scissorRect);
+			auto rtvHandle = pRenderer->GetActiveRTV();
+			m_commandList->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
+
+			const float clearColor[] = { 0.0f, 0.2f, 0.4f, 1.0f };
+			m_commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
+			m_commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+			m_commandList->DrawInstanced(3, 1, 0, 0);
+
 			pRenderer->EndFrame();
 		}
 		void LoadModel(Model* pModel) {}
@@ -138,10 +154,12 @@ namespace TheLastOfSH {
 		ID3D12RootSignature* m_rootSignature = nullptr;
 		ID3D12PipelineState* m_pipelineState = nullptr;
 
+		uint32_t m_w;
+		uint32_t m_h;
 	};
 
-	Scene* CreateScene(Renderer* pRenderer) {
-		MyScene* scene = new MyScene(pRenderer);
+	Scene* CreateScene(Renderer* pRenderer, uint32_t w, uint32_t h) {
+		MyScene* scene = new MyScene(pRenderer, w, h);
 		return scene;
 	}
 

@@ -86,6 +86,23 @@ namespace TheLastOfSH {
 				m_Allocators.push_back(pAlloc);
 			}
 			pDevice->CreateCommandList1(0, listDesc, D3D12_COMMAND_LIST_FLAG_NONE, IID_PPV_ARGS(&m_list));
+
+			
+				// Describe and create a render target view (RTV) descriptor heap.
+			D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc = {};
+			rtvHeapDesc.NumDescriptors = bufferCount;
+			rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+			rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+			pDevice->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&pRTVHeap));
+			auto m_rtvDescriptorSize = pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+			auto rtvHandle = pRTVHeap->GetCPUDescriptorHandleForHeapStart();
+			for (UINT n = 0; n < bufferCount; ++n)
+			{
+				Microsoft::WRL::ComPtr<ID3D12Resource> renderTargets;
+				pSwapchain->GetBuffer(n, IID_PPV_ARGS(&renderTargets));
+				pDevice->CreateRenderTargetView(renderTargets.Get(), nullptr, rtvHandle);
+				rtvHandle.ptr += m_rtvDescriptorSize;
+			}
 		}
 		~MyRenderer() {
 			const uint64_t fence = mFenceValue;
@@ -98,6 +115,7 @@ namespace TheLastOfSH {
 			for (auto &alloc: m_Allocators) {
 				alloc->Release();
 			}
+			pRTVHeap->Release();
 			m_list->Release();
 			pTexturePool->Release();
 			pDxFence->Release();
@@ -122,6 +140,7 @@ namespace TheLastOfSH {
 
 		void BeginFrame() {
 			auto frameIndex = pSwapchain->GetCurrentBackBufferIndex();
+			m_Allocators[frameIndex]->Reset();
 			m_list->Reset(m_Allocators[frameIndex], nullptr);
 			Microsoft::WRL::ComPtr<ID3D12Resource> _res;
 			pSwapchain->GetBuffer(frameIndex, IID_PPV_ARGS(&_res));
@@ -152,6 +171,14 @@ namespace TheLastOfSH {
 			Present();
 		}
 
+		D3D12_CPU_DESCRIPTOR_HANDLE GetActiveRTV() const {
+			auto rtvHandle = pRTVHeap->GetCPUDescriptorHandleForHeapStart();
+			auto frameIndex = pSwapchain->GetCurrentBackBufferIndex();
+			auto m_rtvDescriptorSize = pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+			rtvHandle.ptr += (m_rtvDescriptorSize * frameIndex);
+			return rtvHandle;
+		}
+
 		ID3D12Device8* pDevice = nullptr;
 		IDXGISwapChain4* pSwapchain = nullptr;
 		ID3D12CommandQueue* pMainQueue = nullptr;
@@ -163,6 +190,8 @@ namespace TheLastOfSH {
 
 		ID3D12GraphicsCommandList* m_list = nullptr;
 		std::vector<ID3D12CommandAllocator*> m_Allocators;
+
+		ID3D12DescriptorHeap* pRTVHeap = nullptr;
 	};
 
 	Renderer* CreateRenderer(HWND hwnd, UINT w, UINT h) {
