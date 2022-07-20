@@ -120,6 +120,38 @@ namespace TheLastOfSH {
 			return m_list;
 		}
 
+		void BeginFrame() {
+			auto frameIndex = pSwapchain->GetCurrentBackBufferIndex();
+			m_list->Reset(m_Allocators[frameIndex], nullptr);
+			Microsoft::WRL::ComPtr<ID3D12Resource> _res;
+			pSwapchain->GetBuffer(frameIndex, IID_PPV_ARGS(&_res));
+			D3D12_RESOURCE_BARRIER barrier{};
+			barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+			barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+			barrier.Transition.pResource = _res.Get();
+			barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+			barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
+			barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+			m_list->ResourceBarrier(1, &barrier);
+		}
+
+		void EndFrame() {
+			auto frameIndex = pSwapchain->GetCurrentBackBufferIndex();
+			Microsoft::WRL::ComPtr<ID3D12Resource> _res;
+			pSwapchain->GetBuffer(frameIndex, IID_PPV_ARGS(&_res));
+			D3D12_RESOURCE_BARRIER barrier{};
+			barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+			barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+			barrier.Transition.pResource = _res.Get();
+			barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+			barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+			barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+			m_list->ResourceBarrier(1, &barrier);
+			m_list->Close();
+			pMainQueue->ExecuteCommandLists(1, (ID3D12CommandList* const*)&m_list);
+			Present();
+		}
+
 		ID3D12Device8* pDevice = nullptr;
 		IDXGISwapChain4* pSwapchain = nullptr;
 		ID3D12CommandQueue* pMainQueue = nullptr;

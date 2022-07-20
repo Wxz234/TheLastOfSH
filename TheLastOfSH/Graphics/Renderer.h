@@ -10,6 +10,8 @@ namespace TheLastOfSH {
 		virtual ID3D12Device8* GetDevice() const = 0;
 		virtual ID3D12DescriptorHeap* GetTexturePool() const = 0;
 		virtual ID3D12GraphicsCommandList* GetActiveCmdList() const = 0;
+		virtual void BeginFrame() = 0;
+		virtual void EndFrame() = 0;
 	};
 
 	Renderer* CreateRenderer(HWND hwnd, UINT w, UINT h);

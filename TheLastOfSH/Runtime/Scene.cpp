@@ -130,7 +130,8 @@ namespace TheLastOfSH {
 		}
 
 		void Draw() {
-			pRenderer->Present();
+			pRenderer->BeginFrame();
+			pRenderer->EndFrame();
 		}
 		void LoadModel(Model* pModel) {}
 		Renderer* pRenderer = nullptr;
