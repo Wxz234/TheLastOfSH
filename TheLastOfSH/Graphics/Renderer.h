@@ -12,7 +12,7 @@ namespace TheLastOfSH {
 		virtual ID3D12GraphicsCommandList* GetActiveCmdList() const = 0;
 		virtual void BeginFrame() = 0;
 		virtual void EndFrame() = 0;
-		virtual D3D12_CPU_DESCRIPTOR_HANDLE GetActiveRTV() const = 0;
+		virtual void ClearRenderTarget(float x, float y, float z, float w) = 0;
 		virtual void AddComPtrRef(IUnknown* ptr) = 0;
 	};
 

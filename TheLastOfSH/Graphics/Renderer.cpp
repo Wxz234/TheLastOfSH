@@ -87,8 +87,6 @@ namespace TheLastOfSH {
 			}
 			pDevice->CreateCommandList1(0, listDesc, D3D12_COMMAND_LIST_FLAG_NONE, IID_PPV_ARGS(&m_list));
 
-			
-				// Describe and create a render target view (RTV) descriptor heap.
 			D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc = {};
 			rtvHeapDesc.NumDescriptors = bufferCount;
 			rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
@@ -103,6 +101,9 @@ namespace TheLastOfSH {
 				pDevice->CreateRenderTargetView(renderTargets.Get(), nullptr, rtvHandle);
 				rtvHandle.ptr += m_rtvDescriptorSize;
 			}
+
+			_w = w;
+			_h = h;
 		}
 		~MyRenderer() {
 			const uint64_t fence = mFenceValue;
@@ -156,6 +157,16 @@ namespace TheLastOfSH {
 			barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
 			barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 			m_list->ResourceBarrier(1, &barrier);
+
+			auto rtvHandle = pRTVHeap->GetCPUDescriptorHandleForHeapStart();
+			auto m_rtvDescriptorSize = pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+			rtvHandle.ptr += (m_rtvDescriptorSize * frameIndex);
+			m_list->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
+
+			D3D12_VIEWPORT m_viewport{ 0.f, 0.f, (float)_w, (float)_h, 0.f, 1.f };
+			m_list->RSSetViewports(1, &m_viewport);
+			D3D12_RECT m_scissorRect{ 0, 0, _w, _h };
+			m_list->RSSetScissorRects(1, &m_scissorRect);
 		}
 
 		void EndFrame() {
@@ -189,6 +200,12 @@ namespace TheLastOfSH {
 			m_obj.push_back(temp);
 		}
 
+		void ClearRenderTarget(float x, float y, float z, float w) {
+			auto rtv = GetActiveRTV();
+			float color[4]{ x, y, z, w };
+			m_list->ClearRenderTargetView(rtv, color, 0, nullptr);
+		}
+
 		ID3D12Device8* pDevice = nullptr;
 		IDXGISwapChain4* pSwapchain = nullptr;
 		ID3D12CommandQueue* pMainQueue = nullptr;
@@ -203,6 +220,9 @@ namespace TheLastOfSH {
 
 		ID3D12DescriptorHeap* pRTVHeap = nullptr;
 		std::vector<IUnknown*> m_obj;
+
+		UINT _w;
+		UINT _h;
 	};
 
 	Renderer* CreateRenderer(HWND hwnd, UINT w, UINT h) {

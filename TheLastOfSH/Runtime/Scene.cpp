@@ -146,15 +146,8 @@ namespace TheLastOfSH {
 			auto m_commandList = pRenderer->GetActiveCmdList();
 			m_commandList->SetPipelineState(m_pipelineState);
 			m_commandList->SetGraphicsRootSignature(m_rootSignature);
-			D3D12_VIEWPORT m_viewport{ 0.f, 0.f, (float)m_w, (float)m_h, 0.f, 1.f };
-			m_commandList->RSSetViewports(1, &m_viewport);
-			D3D12_RECT m_scissorRect{ 0, 0, m_w, m_h };
-			m_commandList->RSSetScissorRects(1, &m_scissorRect);
-			auto rtvHandle = pRenderer->GetActiveRTV();
-			m_commandList->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
 
-			const float clearColor[] = { 0.0f, 0.2f, 0.4f, 1.0f };
-			m_commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
+			pRenderer->ClearRenderTarget(0.0f, 0.2f, 0.4f, 1.0f);
 			m_commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 			m_commandList->DrawInstanced(3, 1, 0, 0);
 
