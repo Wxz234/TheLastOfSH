@@ -210,6 +210,7 @@ namespace TheLastOfSH {
 			m_list->RSSetViewports(1, &m_viewport);
 			D3D12_RECT m_scissorRect{ 0, 0, _w, _h };
 			m_list->RSSetScissorRects(1, &m_scissorRect);
+			m_list->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		}
 
 		void EndFrame() {

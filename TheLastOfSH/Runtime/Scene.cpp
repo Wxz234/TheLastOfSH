@@ -128,7 +128,6 @@ namespace TheLastOfSH {
             psoDesc.NumRenderTargets = 1;
             psoDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
             psoDesc.SampleDesc.Count = 1;
-
 			device->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&m_pipelineState));
 
 			pRenderer->AddComPtrRef(m_rootSignature);
@@ -141,12 +140,11 @@ namespace TheLastOfSH {
 
 		void Draw() {
 			pRenderer->BeginFrame();
+
 			auto m_commandList = pRenderer->GetActiveCmdList();
 			m_commandList->SetPipelineState(m_pipelineState);
 			m_commandList->SetGraphicsRootSignature(m_rootSignature);
-
 			pRenderer->ClearRenderTarget(0.0f, 0.2f, 0.4f, 1.0f);
-			m_commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 			m_commandList->DrawInstanced(3, 1, 0, 0);
 
 			pRenderer->EndFrame();
