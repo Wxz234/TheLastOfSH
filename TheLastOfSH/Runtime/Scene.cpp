@@ -97,7 +97,7 @@ namespace
 
 namespace TheLastOfSH {
 	struct MyScene : public Scene {
-		MyScene(Renderer* r, uint32_t w, uint32_t h) : pRenderer(r) {
+		MyScene(Renderer* r) : pRenderer(r) {
 			D3D12_DESCRIPTOR_RANGE range{ D3D12_DESCRIPTOR_RANGE_TYPE_SRV, -1, 0, 0, D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND };
 
 			D3D12_ROOT_PARAMETER rootParam{};
@@ -130,8 +130,6 @@ namespace TheLastOfSH {
             psoDesc.SampleDesc.Count = 1;
 
 			device->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&m_pipelineState));
-			m_w = w;
-			m_h = h;
 
 			pRenderer->AddComPtrRef(m_rootSignature);
 			pRenderer->AddComPtrRef(m_pipelineState);
@@ -158,12 +156,10 @@ namespace TheLastOfSH {
 		ID3D12RootSignature* m_rootSignature = nullptr;
 		ID3D12PipelineState* m_pipelineState = nullptr;
 
-		uint32_t m_w;
-		uint32_t m_h;
 	};
 
-	Scene* CreateScene(Renderer* pRenderer, uint32_t w, uint32_t h) {
-		MyScene* scene = new MyScene(pRenderer, w, h);
+	Scene* CreateScene(Renderer* pRenderer) {
+		MyScene* scene = new MyScene(pRenderer);
 		return scene;
 	}
 

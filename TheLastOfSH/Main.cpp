@@ -48,7 +48,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPreInstance, _
 	auto Hwnd = CreateWindowExW(0, L"TheLastOfSH", L"TheLastOfSH", stype, 10, 10, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, GetModuleHandle(nullptr), nullptr);
 
 	auto renderer = TheLastOfSH::CreateRenderer(Hwnd, Width, Height);
-	auto scene = TheLastOfSH::CreateScene(renderer, Width, Height);
+	auto scene = TheLastOfSH::CreateScene(renderer);
 
 	ShowWindow(Hwnd, SW_SHOW);
 

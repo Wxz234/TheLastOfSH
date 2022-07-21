@@ -3,14 +3,13 @@
 #include "../Graphics/Renderer.h"
 #include "Model.h"
 
-#include <cstdint>
 namespace TheLastOfSH {
 	struct Scene {
 		virtual void Draw() = 0;
 		virtual void LoadModel(Model* pModel) = 0;
 	};
 
-	Scene* CreateScene(Renderer* pRenderer, uint32_t w, uint32_t h);
+	Scene* CreateScene(Renderer* pRenderer);
 	void RemoveScene(Scene* pScene);
 }
 #endif
