@@ -221,6 +221,8 @@ namespace TheLastOfSH {
 		ID3D12DescriptorHeap* pRTVHeap = nullptr;
 		std::vector<IUnknown*> m_obj;
 
+		ID3D12Resource *pDepth = nullptr;
+
 		UINT _w;
 		UINT _h;
 	};
