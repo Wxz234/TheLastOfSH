@@ -113,8 +113,8 @@ namespace TheLastOfSH {
 			D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signature, &error);
 			device->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_PPV_ARGS(&m_rootSignature));
 
-            auto vsBlob = ReadData(L"VertexShader.cso");
-            auto psBlob = ReadData(L"PixelShader.cso");
+            auto vsBlob = ReadData(L"SceneVS.cso");
+            auto psBlob = ReadData(L"ScenePS.cso");
 
             D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc = {};
             psoDesc.InputLayout = { 0, 0 };

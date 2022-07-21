@@ -61,10 +61,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Shaders\VertexShader.hlsl">
+    <FxCompile Include="Shaders\SceneVS.hlsl">
       <Filter>资源文件\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="PixelShader.hlsl">
+    <FxCompile Include="ScenePS.hlsl">
       <Filter>资源文件\Shaders</Filter>
     </FxCompile>
   </ItemGroup>
