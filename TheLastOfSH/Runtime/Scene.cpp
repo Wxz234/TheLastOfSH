@@ -98,8 +98,16 @@ namespace
 namespace TheLastOfSH {
 	struct MyScene : public Scene {
 		MyScene(Renderer* r, uint32_t w, uint32_t h) : pRenderer(r) {
+			D3D12_DESCRIPTOR_RANGE range{ D3D12_DESCRIPTOR_RANGE_TYPE_SRV, -1, 0, 0, D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND };
+
+			D3D12_ROOT_PARAMETER rootParam{};
+			rootParam.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+			rootParam.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+			rootParam.DescriptorTable.NumDescriptorRanges = 1;
+			rootParam.DescriptorTable.pDescriptorRanges = &range;
+
 			auto device = pRenderer->GetDevice();
-			D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc{ 0, nullptr, 0, nullptr, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT };
+			D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc{ 1, &rootParam, 0, nullptr, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT };
 			Microsoft::WRL::ComPtr<ID3DBlob> signature;
 			Microsoft::WRL::ComPtr<ID3DBlob> error;
 			D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signature, &error);
@@ -124,6 +132,9 @@ namespace TheLastOfSH {
 			device->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&m_pipelineState));
 			m_w = w;
 			m_h = h;
+
+			pRenderer->AddComPtrRef(m_rootSignature);
+			pRenderer->AddComPtrRef(m_pipelineState);
 		}
 		~MyScene() {
 			m_rootSignature->Release();

@@ -38,7 +38,7 @@ namespace TheLastOfSH {
 			}
 #endif
 			constexpr unsigned bufferCount = 3;
-			D3D12CreateDevice(nullptr, (D3D_FEATURE_LEVEL)0xc200, IID_PPV_ARGS(&pDevice));
+			D3D12CreateDevice(nullptr, (D3D_FEATURE_LEVEL)D3D_FEATURE_LEVEL_12_0, IID_PPV_ARGS(&pDevice));
 
 			D3D12_COMMAND_QUEUE_DESC queueDesc{};
 			queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
@@ -115,6 +115,10 @@ namespace TheLastOfSH {
 			for (auto &alloc: m_Allocators) {
 				alloc->Release();
 			}
+			for (auto& obj : m_obj) {
+				obj->Release();
+			}
+
 			pRTVHeap->Release();
 			m_list->Release();
 			pTexturePool->Release();
@@ -179,6 +183,12 @@ namespace TheLastOfSH {
 			return rtvHandle;
 		}
 
+		void AddComPtrRef(IUnknown* ptr) {
+			IUnknown* temp = nullptr;
+			ptr->QueryInterface(&temp);
+			m_obj.push_back(temp);
+		}
+
 		ID3D12Device8* pDevice = nullptr;
 		IDXGISwapChain4* pSwapchain = nullptr;
 		ID3D12CommandQueue* pMainQueue = nullptr;
@@ -192,6 +202,7 @@ namespace TheLastOfSH {
 		std::vector<ID3D12CommandAllocator*> m_Allocators;
 
 		ID3D12DescriptorHeap* pRTVHeap = nullptr;
+		std::vector<IUnknown*> m_obj;
 	};
 
 	Renderer* CreateRenderer(HWND hwnd, UINT w, UINT h) {
