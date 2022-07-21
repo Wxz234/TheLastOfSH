@@ -102,6 +102,47 @@ namespace TheLastOfSH {
 				rtvHandle.ptr += m_rtvDescriptorSize;
 			}
 
+			D3D12_RESOURCE_DESC depthStencilDesc{};
+			depthStencilDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+			depthStencilDesc.Alignment = 0;
+			depthStencilDesc.Width = w;
+			depthStencilDesc.Height = h;
+			depthStencilDesc.DepthOrArraySize = 1;
+			depthStencilDesc.MipLevels = 1;
+			depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+			depthStencilDesc.SampleDesc.Count = 1;
+			depthStencilDesc.SampleDesc.Quality = 0;
+			depthStencilDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+			depthStencilDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
+
+			D3D12_CLEAR_VALUE optClear;
+			optClear.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+			optClear.DepthStencil.Depth = 1.0f;
+			optClear.DepthStencil.Stencil = 0;
+
+			D3D12_HEAP_PROPERTIES heapProps{};
+			heapProps.Type = D3D12_HEAP_TYPE_DEFAULT;
+			heapProps.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
+			heapProps.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
+			heapProps.CreationNodeMask = 1;
+			heapProps.VisibleNodeMask = 1;
+
+			pDevice->CreateCommittedResource(
+				&heapProps,
+				D3D12_HEAP_FLAG_NONE,
+				&depthStencilDesc,
+				D3D12_RESOURCE_STATE_DEPTH_WRITE,
+				&optClear,
+				IID_PPV_ARGS(&pDepth)
+			);
+
+			D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc = {};
+			dsvHeapDesc.NumDescriptors = 1;
+			dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
+			dsvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+			pDevice->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&pDSVHeap));
+			pDevice->CreateDepthStencilView(pDepth, nullptr, pDSVHeap->GetCPUDescriptorHandleForHeapStart());
+
 			_w = w;
 			_h = h;
 		}
@@ -120,6 +161,8 @@ namespace TheLastOfSH {
 				obj->Release();
 			}
 
+			pDepth->Release();
+			pDSVHeap->Release();
 			pRTVHeap->Release();
 			m_list->Release();
 			pTexturePool->Release();
@@ -222,6 +265,7 @@ namespace TheLastOfSH {
 		std::vector<IUnknown*> m_obj;
 
 		ID3D12Resource *pDepth = nullptr;
+		ID3D12DescriptorHeap* pDSVHeap = nullptr;
 
 		UINT _w;
 		UINT _h;
