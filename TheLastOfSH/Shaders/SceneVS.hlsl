@@ -2,6 +2,13 @@ struct VS_OUT {
 	float4 position: SV_POSITION;
 	float2 texcoord: TEXCOORD;
 };
+
+struct Vertex {
+	float3 Position : POSITION;
+	float3 Normal : MORMAL;
+	float2 UV : TEXCOORD0;
+	uint MatrialID : MATERIALID;
+};
 VS_OUT main(uint VertexID: SV_VertexID) {
 	VS_OUT Out;
 	Out.texcoord = float2((VertexID << 1) & 2, VertexID & 2);
