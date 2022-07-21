@@ -149,11 +149,22 @@ namespace TheLastOfSH {
 
 			pRenderer->EndFrame();
 		}
-		void LoadModel(Model* pModel) {}
+		void LoadModel(Model* pModel) {
+		
+		}
+
+		struct Vertex {
+			float pos[3];
+			float normal[3];
+			float uv[2];
+			uint32_t materialID;
+		};
+
 		Renderer* pRenderer = nullptr;
 		ID3D12RootSignature* m_rootSignature = nullptr;
 		ID3D12PipelineState* m_pipelineState = nullptr;
 
+		std::vector<Vertex> sceneVertex;
 	};
 
 	Scene* CreateScene(Renderer* pRenderer) {
