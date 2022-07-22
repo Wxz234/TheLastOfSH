@@ -133,11 +133,14 @@
   <ItemGroup>
     <ClCompile Include="Graphics\Renderer.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Runtime\Model.cpp" />
     <ClCompile Include="Runtime\Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics\Renderer.h" />
+    <ClInclude Include="Runtime\Model.h" />
     <ClInclude Include="Runtime\Scene.h" />
+    <ClInclude Include="Runtime\Vertex.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="ScenePS.hlsl">
