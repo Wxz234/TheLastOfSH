@@ -1,6 +1,5 @@
 #ifdef _WIN64
 #include "Scene.h"
-#include "Vertex.h"
 
 #include <d3d12.h>
 #include <wrl.h>
