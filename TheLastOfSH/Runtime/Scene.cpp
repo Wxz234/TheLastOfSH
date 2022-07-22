@@ -149,9 +149,6 @@ namespace TheLastOfSH {
 
 			pRenderer->EndFrame();
 		}
-		void LoadModel(Model* pModel) {
-		
-		}
 
 		Renderer* pRenderer = nullptr;
 		ID3D12RootSignature* m_rootSignature = nullptr;

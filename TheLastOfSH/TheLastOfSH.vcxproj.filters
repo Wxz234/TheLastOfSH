@@ -39,27 +39,12 @@
     <ClCompile Include="Runtime\Scene.cpp">
       <Filter>源文件\Runtime</Filter>
     </ClCompile>
-    <ClCompile Include="Runtime\Model.cpp">
-      <Filter>源文件\Runtime</Filter>
-    </ClCompile>
-    <ClCompile Include="Runtime\Material.cpp">
-      <Filter>源文件\Runtime</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics\Renderer.h">
       <Filter>头文件\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Runtime\Scene.h">
-      <Filter>头文件\Runtime</Filter>
-    </ClInclude>
-    <ClInclude Include="Runtime\Model.h">
-      <Filter>头文件\Runtime</Filter>
-    </ClInclude>
-    <ClInclude Include="Runtime\Material.h">
-      <Filter>头文件\Runtime</Filter>
-    </ClInclude>
-    <ClInclude Include="Runtime\Vertex.h">
       <Filter>头文件\Runtime</Filter>
     </ClInclude>
   </ItemGroup>
