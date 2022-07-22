@@ -13,17 +13,10 @@ namespace TheLastOfSH {
 			gltf = nlohmann::json::parse(f);
 		}
 
-		uint32_t GetMaterialSize() const {
-			return material.size();
-		}
-
-		Material* GetMaterial(uint32_t i) const {
-			return material[i];
-		}
 
 		nlohmann::json gltf;
 		std::vector<Vertex> vertex;
-		std::vector<Material*> material;
+
 	};
 
 	Model* CreateModelFromFile(const char* path) {
@@ -31,8 +24,8 @@ namespace TheLastOfSH {
 	}
 
 	void RemoveModel(Model* pModel) {
-		auto temp = dynamic_cast<GLTF_Model*>(pModel);
-		delete temp;
+		//auto temp = dynamic_cast<GLTF_Model*>(pModel);
+		//delete temp;
 	}
 }
 
