@@ -1,6 +1,6 @@
 #ifdef _WIN64
 #include "Model.h"
-
+#include "assimp/Importer.hpp"
 namespace TheLastOfSH {
 	struct MyModel : public Model {
 		virtual std::vector<Vertex> GetVertex() const {
