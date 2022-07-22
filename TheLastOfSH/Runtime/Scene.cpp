@@ -1,5 +1,6 @@
 #ifdef _WIN64
 #include "Scene.h"
+#include "Vertex.h"
 
 #include <d3d12.h>
 #include <wrl.h>
@@ -153,18 +154,10 @@ namespace TheLastOfSH {
 		
 		}
 
-		struct Vertex {
-			float pos[3];
-			float normal[3];
-			float uv[2];
-			uint32_t materialID;
-		};
-
 		Renderer* pRenderer = nullptr;
 		ID3D12RootSignature* m_rootSignature = nullptr;
 		ID3D12PipelineState* m_pipelineState = nullptr;
 
-		std::vector<Vertex> sceneVertex;
 	};
 
 	Scene* CreateScene(Renderer* pRenderer) {

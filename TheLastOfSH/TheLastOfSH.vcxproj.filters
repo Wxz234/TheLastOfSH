@@ -59,6 +59,9 @@
     <ClInclude Include="Runtime\Material.h">
       <Filter>头文件\Runtime</Filter>
     </ClInclude>
+    <ClInclude Include="Runtime\Vertex.h">
+      <Filter>头文件\Runtime</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\SceneVS.hlsl">

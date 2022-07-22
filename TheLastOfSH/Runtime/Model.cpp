@@ -1,8 +1,9 @@
 #ifdef _WIN64
 #include "Model.h"
+#include "Vertex.h"
 #include "../ThirdParty/json/json.hpp"
 #include <fstream>
-
+#include <vector>
 namespace TheLastOfSH {
 
 	struct GLTF_Model : public Model {
@@ -13,15 +14,16 @@ namespace TheLastOfSH {
 		}
 
 		uint32_t GetMaterialSize() const {
-			return 0;
+			return material.size();
 		}
 
 		Material* GetMaterial(uint32_t i) const {
-			return nullptr;
+			return material[i];
 		}
 
 		nlohmann::json gltf;
-
+		std::vector<Vertex> vertex;
+		std::vector<Material*> material;
 	};
 
 	Model* CreateModelFromFile(const char* path) {

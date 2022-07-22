@@ -142,6 +142,7 @@
     <ClInclude Include="Runtime\Material.h" />
     <ClInclude Include="Runtime\Model.h" />
     <ClInclude Include="Runtime\Scene.h" />
+    <ClInclude Include="Runtime\Vertex.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="ScenePS.hlsl">
