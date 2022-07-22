@@ -13,7 +13,8 @@ namespace TheLastOfSH {
 		return nullptr;
 	}
 	void RemoveModel(Model* pModel) {
-		
+		auto temp = dynamic_cast<MyModel*>(pModel);
+		delete temp;
 	}
 }
 
