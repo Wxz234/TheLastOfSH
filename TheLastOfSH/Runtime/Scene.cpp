@@ -1,5 +1,6 @@
 #ifdef _WIN64
 #include "Scene.h"
+#include "Model.h"
 
 #include <d3d12.h>
 #include <wrl.h>
@@ -136,6 +137,10 @@ namespace TheLastOfSH {
 		~MyScene() {
 			m_rootSignature->Release();
 			m_pipelineState->Release();
+
+			for (auto &model:mModel) {
+				RemoveModel(model);
+			}
 		}
 
 		void Draw() {
@@ -150,10 +155,15 @@ namespace TheLastOfSH {
 			pRenderer->EndFrame();
 		}
 
+		void LoadModelFromFile(const char* filePath) {
+			auto pModel = CreateModel(filePath);
+			mModel.push_back(pModel);
+		}
+
 		Renderer* pRenderer = nullptr;
 		ID3D12RootSignature* m_rootSignature = nullptr;
 		ID3D12PipelineState* m_pipelineState = nullptr;
-
+		std::vector<Model*> mModel;
 	};
 
 	Scene* CreateScene(Renderer* pRenderer) {

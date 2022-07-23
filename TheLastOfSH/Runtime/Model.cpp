@@ -65,7 +65,7 @@ namespace TheLastOfSH {
 	};
 
 	Model* CreateModel(const char* path) {
-		return nullptr;
+		return new MyModel(path);
 	}
 	void RemoveModel(Model* pModel) {
 		auto temp = dynamic_cast<MyModel*>(pModel);
