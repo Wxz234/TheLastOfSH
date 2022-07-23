@@ -45,7 +45,6 @@ namespace TheLastOfSH {
 				vertex.Normal[2] = mesh->mNormals[i].z;
 				vertex.TexCoords[0] = mesh->mTextureCoords[0][i].x;
 				vertex.TexCoords[1] = mesh->mTextureCoords[0][i].y;
-				
 
 				mVertex.push_back(vertex);
 			}

@@ -4,6 +4,7 @@
 
 #include "Graphics/Renderer.h"
 #include "Runtime/Scene.h"
+#include "Runtime/Model.h"
 
 UINT Width = 1024, Height = 768;
 
