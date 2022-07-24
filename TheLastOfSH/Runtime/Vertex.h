@@ -6,7 +6,7 @@ namespace TheLastOfSH {
 		float Position[3];
 		float Normal[3];
 		float TexCoords[2];
-		uint32_t MaterialID;
+		int32_t MaterialID;
 	};
 
 }

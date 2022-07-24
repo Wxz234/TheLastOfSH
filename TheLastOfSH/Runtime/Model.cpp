@@ -10,7 +10,7 @@ namespace TheLastOfSH {
 	struct MyModel : public Model {
 
 		MyModel(const char* path) {
-			scene = importer.ReadFile(path, aiProcess_Triangulate);
+			scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenNormals);
 			processNode(scene->mRootNode, scene);
 		}
 
@@ -43,10 +43,15 @@ namespace TheLastOfSH {
 				vertex.Normal[0] = mesh->mNormals[i].x;
 				vertex.Normal[1] = mesh->mNormals[i].y;
 				vertex.Normal[2] = mesh->mNormals[i].z;
-				vertex.TexCoords[0] = mesh->mTextureCoords[0][i].x;
-				vertex.TexCoords[1] = mesh->mTextureCoords[0][i].y;
+				if (!mesh->HasTextureCoords(0)) {
+					vertex.TexCoords[0] = 0.f;
+					vertex.TexCoords[1] = 0.f;
+					vertex.MaterialID = -1;
+				}
 
+				//mesh->HasTextureCoords
 				mVertex.push_back(vertex);
+
 			}
 
 			// ´¦ÀíË÷Òı
