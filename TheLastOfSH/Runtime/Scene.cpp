@@ -11,6 +11,8 @@
 #include <system_error>
 #include <vector>
 
+#pragma warning(disable:4838)
+
 namespace 
 {
     std::vector<uint8_t> ReadData(_In_z_ const wchar_t* name)
@@ -148,10 +150,6 @@ namespace TheLastOfSH {
 			m_commandList->DrawInstanced(3, 1, 0, 0);
 
 			pRenderer->EndFrame();
-		}
-
-		void LoadModelFromFile(const char* filePath) {
-
 		}
 
 		Renderer* pRenderer = nullptr;
