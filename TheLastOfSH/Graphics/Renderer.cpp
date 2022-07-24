@@ -8,6 +8,8 @@
 #include <winerror.h>
 #include <vector>
 
+#pragma warning(disable:4838)
+
 namespace TheLastOfSH {
 
 	struct MyRenderer : public Renderer {
